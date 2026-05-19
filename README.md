@@ -76,7 +76,7 @@ Pick the one that matches how curious / committed you are:
 
 | Friction | Path | Time | What you get |
 |---|---|---|---|
-| **Zero** | Open the hosted demo at `https://melody-ling-l.github.io/judgebuddy/` after GitHub Pages is enabled for this repo | 10 s | Pre-loaded sample data, click around |
+| **Zero** | Open the hosted demo at `https://melody-ling-l.github.io/judgebuddy/` | 10 s | Pre-loaded sample data, click around |
 | **Low** | Download `index.html`, double-click to open in browser | 1 min | Empty app, load your own CSV |
 | **Full** | `git clone` the repo, read code, customize dimensions | 10 min | Your own forked version with custom domain |
 
@@ -112,7 +112,7 @@ In the browser UI, choose the eval run, then use Export -> CSV.
 
 Open `index.html` in your browser. You can use a local file URL or serve it from any static host.
 
-If you publish this repo with GitHub Pages, the default hosted path is:
+Hosted demo:
 
 ```text
 https://melody-ling-l.github.io/judgebuddy/
@@ -389,11 +389,11 @@ Already shipped in v0.1:
 - ✅ Single-file app at repo root as `index.html`.
 - ✅ Sample CSV for first-time users at `demo/sample_eval.csv`.
 - ✅ Basic converter scripts at `scripts/convert.py` (OpenAI Evals, Braintrust, generic JSON).
+- ✅ README demo assets, including the inline linked-highlight GIF.
+- ✅ GitHub Pages hosted demo at `https://melody-ling-l.github.io/judgebuddy/`.
 
 Near-term:
 
-- Add README demo images and a linked-highlight GIF.
-- Enable GitHub Pages for a zero-friction hosted demo.
 - Polish native importers (OpenAI Evals JSONL, Braintrust trace JSON, Langfuse, Phoenix).
 - Add a self-test mode that loads the bundled `demo/sample_eval.csv` on first open if no CSV chosen.
 
