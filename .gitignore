@@ -1,0 +1,29 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Local labels exported by users — do NOT commit by default
+# (uncomment the next line if you want to share labels in this repo)
+# !labels_*.yaml
+labels_*.yaml
+*_labels.json
+
+# Test outputs
+output/
+tmp/
+
+# Python (for scripts/)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node (if anyone adds tooling later)
+node_modules/
+package-lock.json
