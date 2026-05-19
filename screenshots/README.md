@@ -1,7 +1,13 @@
 # Screenshots
 
-This folder holds README assets. Replace the placeholders here with real captures
-once you have `index.html` running.
+This folder holds README assets.
+
+Current checked-in assets:
+
+- `three-pane-view.png` for the static three-pane preview
+- `linked-highlight.gif` for the inline README demo
+
+To regenerate the demo assets locally, open `capture_demo.html` through a local static server and recapture the frames/GIF.
 
 ## Required for the GitHub README
 

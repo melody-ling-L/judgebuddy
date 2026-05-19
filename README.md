@@ -8,13 +8,15 @@
 [![Single File](https://img.shields.io/badge/distribution-single_HTML-orange.svg)](#)
 [![Status](https://img.shields.io/badge/status-v0.1-yellow.svg)](#roadmap)
 
-Repository: https://github.com/melody-ling-L/judgebuddy
-
 JudgeBuddy is a lightweight meta-eval labeling tool for LLM evaluation workflows. It helps you compare source context, target context, model output, judge scores, and human labels in one local browser page.
 
 No backend. No database. No login. Your data stays in your browser.
 
-> 📷 **Screenshot / GIF placeholder.** Before real captures land, use `screenshots/README.md` as the checklist for `three-pane-view.png`, `linked-highlight.gif`, and the other README assets.
+<p align="center">
+  <img src="screenshots/linked-highlight.gif" alt="JudgeBuddy demo showing linked highlighting across resume, JD, and rewrite panes" width="980">
+</p>
+
+Static preview: [three-pane-view.png](screenshots/three-pane-view.png). Asset notes: [screenshots/README.md](screenshots/README.md).
 
 ## What It Is
 
@@ -93,7 +95,7 @@ index.html
 During the original ResumeRewriteBench development, the same app lived at:
 
 ```text
-resume-rewrite-bench/meta_eval/labeling_app.html
+eval-resume/meta_eval/labeling_app.html
 ```
 
 ### 2. Export a promptfoo CSV
@@ -382,12 +384,18 @@ One caveat: if you host the HTML on a public static site, the app code is public
 
 ## Roadmap
 
+Already shipped in v0.1:
+
+- ✅ Single-file app at repo root as `index.html`.
+- ✅ Sample CSV for first-time users at `demo/sample_eval.csv`.
+- ✅ Basic converter scripts at `scripts/convert.py` (OpenAI Evals, Braintrust, generic JSON).
+
 Near-term:
 
-- Add the app file to this standalone repository as `index.html`.
-- Add a small sample CSV for first-time users.
-- Add README demo images or a short GIF once the UI is packaged.
-- Add native import helpers for OpenAI Evals, Braintrust, Langfuse, and Phoenix exports.
+- Add README demo images and a linked-highlight GIF.
+- Enable GitHub Pages for a zero-friction hosted demo.
+- Polish native importers (OpenAI Evals JSONL, Braintrust trace JSON, Langfuse, Phoenix).
+- Add a self-test mode that loads the bundled `demo/sample_eval.csv` on first open if no CSV chosen.
 
 Later:
 
@@ -455,7 +463,7 @@ No build step. No npm install. No CI required.
 
 - [promptfoo](https://promptfoo.dev/) for setting a de-facto CSV schema for LLM eval results.
 - G-Eval (Liu et al., NeurIPS 2023) and Prometheus (Kim et al.) for the LLM-as-judge methodology foundation.
-- The [ResumeRewriteBench](https://github.com/melody-ling-L/resume-rewrite-bench) project for being the original consumer of this tool — that's where the design pressure came from.
+- The [ResumeRewriteBench](https://github.com/melody-ling-L/eval-resume) project for being the original consumer of this tool — that's where the design pressure came from.
 
 ## Origin
 
@@ -469,11 +477,13 @@ The surprising part: the workflow is not resume-specific. Any team doing LLM eva
 
 JudgeBuddy is for that moment.
 
-## License / Citation
+## License
 
-Suggested license for the public repo: MIT.
+MIT License — see the [LICENSE](LICENSE) file.
 
-If you cite or mention the project:
+## Citation
+
+If you reference JudgeBuddy in your work:
 
 ```bibtex
 @misc{judgebuddy2026,
@@ -484,4 +494,9 @@ If you cite or mention the project:
 }
 ```
 
-Issues and pull requests: https://github.com/melody-ling-L/judgebuddy/issues
+## Contact
+
+- Issues & PRs: https://github.com/melody-ling-L/judgebuddy/issues
+- Author: [@melody](mailto:joy025010joy@gmail.com)
+
+⭐ If JudgeBuddy helped you, please star the repo — zero-deployment tools spread by word of mouth.

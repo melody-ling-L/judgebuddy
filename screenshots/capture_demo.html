@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>JudgeBuddy README Capture</title>
+<style>
+html, body {
+  margin: 0;
+  width: 1600px;
+  height: 1080px;
+  overflow: hidden;
+  background: #f5f5f7;
+}
+
+body {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+iframe {
+  width: 1600px;
+  height: 1080px;
+  border: 0;
+  display: block;
+  opacity: 0;
+}
+
+body.ready iframe {
+  opacity: 1;
+}
+</style>
+</head>
+<body>
+<iframe id="app" src="../index.html"></iframe>
+<script>
+const DATA_CACHE_KEY = 'judgebuddy-cached-data-v1';
+const STORAGE_PREFIX = 'judgebuddy-label-';
+const mode = new URLSearchParams(window.location.search).get('mode') || 'base';
+const iframe = document.getElementById('app');
+
+const SAMPLE_DATA = [
+  {
+    description: 'Case 01 - Junior frontend -> Senior frontend (AI startup)',
+    caseId: '01',
+    provider: 'GPT',
+    providerFull: 'GPT-5.4',
+    candidateName: '张明远',
+    resume: '',
+    jd: '',
+    output: `张明远\n邮箱：zhangmingyuan@example.com\n电话：138-0000-0001\n\n【个人概况】\n2 年前端开发经验，持续负责后台系统模块交付与联调。\n\n【工作经历】\n某互联网公司｜前端开发工程师\n- 负责订单、商品、用户运营模块开发与维护\n- 使用 Vue.js 和 Element UI 支撑后台业务迭代\n- 与产品、后端协作推进需求落地并优化页面性能\n\n【技能】\n- HTML / CSS / JavaScript\n- Vue.js / React（初级）\n- Git\n- 英语 CET-6`,
+    status: 'PASS',
+    totalScore: '0.84',
+    namedScores: {
+      '语义_诚实度': 0.92,
+      '岗位_贴合度': 0.86,
+      '表达_专业度': 0.74
+    },
+    reason: '整体保持事实边界，关键词覆盖尚可，表达更紧凑。'
+  },
+  {
+    description: 'Case 02 - Ecommerce PM -> AI product manager',
+    caseId: '02',
+    provider: 'Claude',
+    providerFull: 'Claude Sonnet 4.6',
+    candidateName: '李婉清',
+    resume: '',
+    jd: '',
+    output: `李婉清\n\n【个人概况】\n6 年产品经验，长期负责会员体系、实验迭代与数据驱动优化。\n\n【工作经历】\n某电商平台｜高级产品经理\n- 负责会员等级、积分、付费会员卡等核心产品模块\n- 主导 A/B 测试机制建设，累计推动 30+ 实验迭代\n- 与数据、设计、研发、运营协同推进策略落地\n\n【技能】\n- SQL / Tableau / Excel\n- Axure / Figma / Jira\n- A/B 测试 / 用户分层 / 项目管理`,
+    status: 'PASS',
+    totalScore: '0.88',
+    namedScores: {
+      '语义_诚实度': 0.8,
+      '岗位_贴合度': 0.9,
+      '表达_专业度': 0.95
+    },
+    reason: '结构清晰，抽象概括合理，但 AI 方向仍需人工复核。'
+  }
+];
+
+const SAMPLE_LABELS = {
+  '01-GPT-语义_诚实度': { value: 1, reason: '无明显捏造' },
+  '01-GPT-岗位_贴合度': { value: 1, reason: '关键词更集中' },
+  '01-GPT-表达_专业度': { value: 0, reason: '措辞偏模板化' },
+  '02-Claude-语义_诚实度': { value: 1, reason: '抽象合理' },
+  '02-Claude-岗位_贴合度': { value: 1, reason: '更贴近 JD' },
+  '02-Claude-表达_专业度': { value: 1, reason: '表达顺畅' }
+};
+
+let primed = false;
+
+iframe.addEventListener('load', () => {
+  const appWindow = iframe.contentWindow;
+  if (!primed) {
+    appWindow.localStorage.setItem(DATA_CACHE_KEY, JSON.stringify(SAMPLE_DATA));
+    Object.entries(SAMPLE_LABELS).forEach(([key, value]) => {
+      appWindow.localStorage.setItem(`${STORAGE_PREFIX}${key}`, JSON.stringify(value));
+    });
+    primed = true;
+    appWindow.location.reload();
+    return;
+  }
+
+  window.setTimeout(() => {
+    appWindow.document.querySelectorAll('.dimension').forEach(dimEl => {
+      appWindow.saveLabel(dimEl.dataset.key, dimEl);
+    });
+
+    if (mode === 'highlight-resume') {
+      const target = appWindow.document.querySelector('.case-card .col[data-column="resume"] .doc-block[data-block-type="content"]');
+      if (target) {
+        appWindow.toggleLinkedBlocks(target);
+      }
+    }
+
+    if (mode === 'highlight-rewrite') {
+      const blocks = appWindow.document.querySelectorAll('.case-card .col[data-column="rewrite"] .doc-block[data-block-type="content"]');
+      const target = blocks[2] || blocks[0];
+      if (target) {
+        appWindow.toggleLinkedBlocks(target);
+      }
+    }
+
+    document.body.classList.add('ready');
+  }, 900);
+});
+</script>
+</body>
+</html>
