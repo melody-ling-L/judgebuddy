@@ -27,11 +27,75 @@ h1 { margin: 0; font-size: 20px; }
 .status span.done { background: #d4edda; color: #155724; }
 
 .data-loader {
-  background: white; padding: 20px;
+  background: white; padding: 24px;
   border-radius: 12px; margin-bottom: 20px;
+  border: 1px solid #e8e8ed;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.04);
 }
 .data-loader h2 { margin-top: 0; font-size: 16px; }
 .data-loader p { color: #666; margin: 8px 0; }
+.loader-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 18px 0 10px;
+}
+.loader-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+}
+.loader-button:hover {
+  transform: translateY(-1px);
+}
+.loader-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+  transform: none;
+}
+.loader-button.primary {
+  background: #007aff;
+  color: white;
+  box-shadow: 0 6px 16px rgba(0,122,255,0.2);
+}
+.loader-button.secondary {
+  background: #f5f5f7;
+  color: #1d1d1f;
+  border-color: #d2d2d7;
+}
+.loader-divider {
+  color: #86868b;
+  font-size: 12px;
+}
+.loader-note {
+  color: #86868b;
+  font-size: 12px;
+}
+#csvFile {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+#loadStatus {
+  display: block;
+  min-height: 22px;
+  margin-top: 4px;
+}
 
 .case-card {
   background: white; padding: 20px;
@@ -279,10 +343,16 @@ footer button.danger { background: #ff3b30; color: white; margin-left: auto; }
 </header>
 
 <section class="data-loader">
-  <h2>第 1 步：加载 eval CSV</h2>
-  <p>在 promptfoo view 里点对应 eval 的 ⬇️ Export → CSV，然后：</p>
-  <input type="file" id="csvFile" accept=".csv">
-  <span id="loadStatus" style="margin-left: 12px; color: #666;"></span>
+  <h2>先体验，再决定要不要上传数据</h2>
+  <p>用内置样例体验 Judge 与人工标注的分歧检查，或加载你自己的 promptfoo CSV。</p>
+  <div class="loader-actions">
+    <button type="button" id="loadDemo" class="loader-button primary">▶ 立即体验示例</button>
+    <span class="loader-divider">或</span>
+    <label for="csvFile" class="loader-button secondary">上传自己的 CSV</label>
+    <input type="file" id="csvFile" accept=".csv,text/csv">
+  </div>
+  <div class="loader-note">无需登录 · 无需 API Key · 数据仅在当前浏览器处理</div>
+  <span id="loadStatus" aria-live="polite"></span>
   <div class="hint">
     💡 标注会自动保存到浏览器 localStorage，关页面不丢。再次加载同一份 CSV 会回填之前的标注。
   </div>
@@ -560,19 +630,57 @@ function parseCsvText(text) {
   return { data, fields };
 }
 
+function useParsedCsv(results, sourceLabel) {
+  const parsedData = parseEvalCSV(results.data, results.fields || []);
+  if (parsedData.length === 0) {
+    throw new Error('没有找到可标注的 case-provider 数据');
+  }
+
+  loadedData = parsedData;
+  localStorage.setItem(DATA_CACHE_KEY, JSON.stringify(loadedData));
+  document.getElementById('loadStatus').innerHTML =
+    `<span style="color:#248a3d">✓ ${escapeHtml(sourceLabel)}：已加载 ${loadedData.length} 条 case-provider</span>`;
+  renderCases();
+
+  const firstCase = document.querySelector('.case-card');
+  if (firstCase) {
+    firstCase.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+document.getElementById('loadDemo').addEventListener('click', async function() {
+  const button = this;
+  const status = document.getElementById('loadStatus');
+  button.disabled = true;
+  button.textContent = '正在加载示例…';
+  status.innerHTML = '<span style="color:#666">正在读取内置评测数据…</span>';
+
+  try {
+    const response = await fetch('demo/sample_eval.csv', { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`示例数据请求失败（${response.status}）`);
+    }
+    const results = parseCsvText(await response.text());
+    useParsedCsv(results, '示例数据');
+  } catch (err) {
+    console.error(err);
+    status.innerHTML =
+      `<span style="color:#d70015">✗ ${escapeHtml(err.message)}。若你是双击打开 HTML，请改用在线 Demo 或本地 HTTP 服务。</span>`;
+  } finally {
+    button.disabled = false;
+    button.textContent = '▶ 立即体验示例';
+  }
+});
+
 document.getElementById('csvFile').addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (!file) return;
   parseCsvFile(file).then(results => {
-    loadedData = parseEvalCSV(results.data, results.fields || []);
-    localStorage.setItem(DATA_CACHE_KEY, JSON.stringify(loadedData));
-    document.getElementById('loadStatus').innerHTML =
-      `<span style="color:#248a3d">✓ 加载了 ${loadedData.length} 条 case-provider</span>`;
-    renderCases();
+    useParsedCsv(results, file.name);
   }).catch(err => {
     console.error(err);
     document.getElementById('loadStatus').innerHTML =
-      `<span style="color:#d70015">✗ 解析失败: ${err.message}</span>`;
+      `<span style="color:#d70015">✗ 解析失败: ${escapeHtml(err.message)}</span>`;
   });
 });
 

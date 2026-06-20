@@ -76,7 +76,7 @@ Pick the one that matches how curious / committed you are:
 
 | Friction | Path | Time | What you get |
 |---|---|---|---|
-| **Zero** | Open the hosted demo at `https://melody-ling-l.github.io/judgebuddy/` | 10 s | Pre-loaded sample data, click around |
+| **Zero** | Open the hosted demo and click `立即体验示例` | 10 s | One-click sample data, no login or API key |
 | **Low** | Download `index.html`, double-click to open in browser | 1 min | Empty app, load your own CSV |
 | **Full** | `git clone` the repo, read code, customize dimensions | 10 min | Your own forked version with custom domain |
 
@@ -122,7 +122,7 @@ https://melody-ling-l.github.io/judgebuddy/
 
 In JudgeBuddy:
 
-1. Select the exported CSV.
+1. Click `立即体验示例`, or select your exported CSV.
 2. Review each case in the three-pane view.
 3. Click text blocks to trigger linked highlighting.
 4. Mark each dimension as PASS or FAIL.
@@ -388,6 +388,7 @@ Already shipped in v0.1:
 
 - ✅ Single-file app at repo root as `index.html`.
 - ✅ Sample CSV for first-time users at `demo/sample_eval.csv`.
+- ✅ One-click sample experience on the hosted demo.
 - ✅ Basic converter scripts at `scripts/convert.py` (OpenAI Evals, Braintrust, generic JSON).
 - ✅ README demo assets, including the inline linked-highlight GIF.
 - ✅ GitHub Pages hosted demo at `https://melody-ling-l.github.io/judgebuddy/`.
@@ -395,7 +396,7 @@ Already shipped in v0.1:
 Near-term:
 
 - Polish native importers (OpenAI Evals JSONL, Braintrust trace JSON, Langfuse, Phoenix).
-- Add a self-test mode that loads the bundled `demo/sample_eval.csv` on first open if no CSV chosen.
+- Add optional auto-load via a `?demo=1` URL for interview and portfolio links.
 
 Later:
 
